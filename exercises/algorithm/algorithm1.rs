@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
@@ -28,13 +27,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::fmt::Debug> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::fmt::Debug> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -68,14 +67,43 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+    where T: Clone + std::cmp::PartialOrd 
 	{
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut list_res = LinkedList::new();
+
+        let mut i :i32 = 0 ;
+        let mut j :i32 = 0 ;
+        let list_a_length :i32 = list_a.length as i32;
+        let list_b_length :i32 = list_b.length as i32;
+        
+        while i < list_a_length && j < list_b_length {
+            
+            let a = list_a.get(i).unwrap().clone();
+            let b = list_b.get(j).unwrap().clone();
+            if a < b {
+                list_res.add(a);
+                i += 1;
+            }else{
+                list_res.add(b);
+                j += 1;
+            }
         }
+        println!("=======================================");
+            println!("{:?} -- {:?}", i , j);
+        while i < list_a_length {
+            let a = list_a.get(i).unwrap().clone();
+            list_res.add(a);
+            i += 1;
+        }
+        while j < list_b_length {
+            let b = list_b.get(j).unwrap().clone();
+            list_res.add(b);
+            j += 1 ;
+        }
+        list_res
 	}
 }
 

@@ -30,6 +30,16 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        let (start, end, weight) = edge;
+        let start_node = start.to_string();
+        let end_node = end.to_string();
+
+        match self.adjacency_table.get_mut(&start_node){
+            Some(next_node) => next_node.push((start_node,weight)),
+            None => self.adjacency_table_mutable().insert();
+        }
+
+
     }
 }
 pub trait Graph {

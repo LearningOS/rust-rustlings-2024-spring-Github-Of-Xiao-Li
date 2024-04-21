@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,8 +37,26 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.count += 1;
+        self.items.push(value);
+        let i  = self.count;
+        self.up(i);
     }
-
+    fn up(&mut self,mut i :usize) {
+        while i / 2 != 0 && (self.comparator)(&self.items[i / 2 ], &self.items[i]){
+            self.items.swap(i, i /2);
+            i /=2;
+        }
+    }
+    fn down(&mut self,mut i :usize) {
+        let mut t  = i;
+        if i * 2 <= self.count && (self.comparator)(&self.items[ t ], &self.items[ i * 2]) {t = i * 2; ;}
+        if i * 2 + 1 <= self.count && (self.comparator)(&self.items[ t ], &self.items[ i * 2 + 1]) {t = i * 2 + 1;}
+        if i != t {
+            self.items.swap(i, t);
+            self.down(t);
+        }
+    }
     fn parent_idx(&self, idx: usize) -> usize {
         idx / 2
     }
@@ -57,7 +74,6 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
 		0
     }
 }
@@ -79,13 +95,16 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default  + std::fmt::Display,
 {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 { return None ;}
+        let res = self.items.swap_remove(1);
+        self.count -= 1;
+        self.down(1);
+        Some(res)
     }
 }
 
@@ -97,7 +116,7 @@ impl MinHeap {
     where
         T: Default + Ord,
     {
-        Heap::new(|a, b| a < b)
+        Heap::new(|a, b| a > b)
     }
 }
 
@@ -109,7 +128,7 @@ impl MaxHeap {
     where
         T: Default + Ord,
     {
-        Heap::new(|a, b| a > b)
+        Heap::new(|a, b| a < b)
     }
 }
 
