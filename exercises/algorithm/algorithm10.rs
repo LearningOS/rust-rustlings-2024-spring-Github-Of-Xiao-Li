@@ -2,7 +2,6 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -35,11 +34,21 @@ impl Graph for UndirectedGraph {
         let end_node = end.to_string();
 
         match self.adjacency_table.get_mut(&start_node){
-            Some(next_node) => next_node.push((start_node,weight)),
-            None => self.adjacency_table_mutable().insert();
+            Some(next_node) => next_node.push((end_node.clone(),weight)),
+            None => {
+                let vec_temp = vec![(end_node.clone(),weight)];
+                self.adjacency_table_mutable().insert(start_node,vec_temp);
+            },
         }
-
-
+        let start_node = start.to_string();
+        let end_node = end.to_string();
+        match self.adjacency_table.get_mut(&end_node){
+            Some(next_node) => next_node.push((start_node.clone(),weight)),
+            None => {
+                let vec_temp = vec![(start_node.clone(),weight)];
+                self.adjacency_table_mutable().insert(end_node,vec_temp);
+            },
+        }
     }
 }
 pub trait Graph {
@@ -52,6 +61,7 @@ pub trait Graph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        println!("====================================");
     }
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
@@ -87,6 +97,9 @@ mod test_undirected_graph {
             (&String::from("b"), &String::from("c"), 10),
             (&String::from("c"), &String::from("b"), 10),
         ];
+        for i in graph.edges() {
+            println!("{:?}",i);
+        }
         for edge in expected_edges.iter() {
             assert_eq!(graph.edges().contains(edge), true);
         }
